@@ -8,9 +8,6 @@ from rest_framework.response import Response
 from api.serializers import AttendanceTrackerSerializer, UserSerializer
 from api.service import generateCode
 
-# from .service import stock_update,sort_order, order_details, stock_check, sort_invoice
-
-
 
 @api_view(['GET'])
 def home(request):
@@ -20,6 +17,7 @@ def home(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def getCode(request):
     serializer = generateCode()
     return Response(serializer.data , status=status.HTTP_201_CREATED)
@@ -42,14 +40,13 @@ def postAttendance(request):
             serializer.save()
             instance.expired = True
             instance.save()
-
-            serializer = generateCode()
             
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def checkExpiry(request, pk):
     instance = AttendanceTracker.objects.get(id=pk)
     response = {'expired': 'false'}
@@ -59,6 +56,7 @@ def checkExpiry(request, pk):
 
 
 @api_view(['PUT'])
+@permission_classes([IsAdminUser])
 def makeExpiry(request, pk):
     instance = AttendanceTracker.objects.get(id=pk)
     instance.expired = True
