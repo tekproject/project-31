@@ -1,5 +1,6 @@
 from api.models import AttendanceTracker
 from django.contrib.auth.models import User
+import datetime
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -7,7 +8,6 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from api.serializers import AttendanceTrackerSerializer, UserSerializer
 from api.service import generateCode
-
 
 @api_view(['GET'])
 def home(request):
@@ -35,6 +35,13 @@ def checkIn(request):
         return Response(response)
 
     qrCodeInstance = AttendanceTracker.objects.filter(user = request.user.id, checkInStatus=True, checkOutStatus=False).exclude(place = 'college')
+    
+    date = datetime.datetime.now().date()
+    
+    collegeValidation = AttendanceTracker.objects.filter(user = request.user.id, place = 'college', checkIn= True, checkOut= False, date = date)
+
+    collegeCheckoutValidation = AttendanceTracker.objects.filter(user = request.user.id, place = 'college', checkOut= False).exclude(date = date)
+
 
     if(instance.expired):
         response = {'message':'This QR code is expired'}
@@ -43,6 +50,15 @@ def checkIn(request):
     elif(qrCodeInstance):
         response = {'message':'Please Check-Out your Last Entry'}
         return Response(response)
+
+    elif(collegeValidation is None):
+        response = {'message':'Please Check-In first with college QR'}
+        return Response(response)
+
+    elif(collegeCheckoutValidation):
+        response = {'message':'Please Check-Out your Last Entry in college QR'}
+        return Response(response)
+
 
     elif(instance.user.is_staff):
         serializer = AttendanceTrackerSerializer(instance=instance, data=data)
