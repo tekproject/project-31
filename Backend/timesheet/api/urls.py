@@ -9,7 +9,8 @@ urlpatterns = [
     path('user-profile', views.profile, name='User-logged'),
 
     path('generate-code', views.getCode, name='get-QR-code'),
-    path('submit-code', views.postAttendance, name='post-QR-code'),
+    path('check-in', views.checkIn, name='QR-code-checkin'),
+    path('check-out', views.checkOut, name='QR-code-checkout'),
     path('validate-code/<int:pk>', views.checkExpiry, name='validate-QR-code'),
     path('expire-code/<int:pk>', views.makeExpiry, name='Expire-QR-code'),
     

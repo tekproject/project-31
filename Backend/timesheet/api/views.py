@@ -24,25 +24,48 @@ def getCode(request):
 
 
 @api_view(['PUT'])
-def postAttendance(request): 
-
+def checkIn(request):
+    
     data = request.data
-
-    instance = AttendanceTracker.objects.get(barcodeId=data['barcodeId'])
-
-    if(instance.expired):
-        response = {'message':'This is QR code is expired'}
+    
+    try:
+        instance = AttendanceTracker.objects.get(qrCodeId=data['qrCodeId'])
+    except:
+        response = {'message':'This is not valid QR code'}
         return Response(response)
 
-    if(instance.user.is_staff):
+    qrCodeInstance = AttendanceTracker.objects.filter(user = request.user.id, checkInStatus=True, checkOutStatus=False).exclude(place = 'college')
+
+    if(instance.expired):
+        response = {'message':'This QR code is expired'}
+        return Response(response)
+    
+    elif(qrCodeInstance):
+        response = {'message':'Please Check-Out your Last Entry'}
+        return Response(response)
+
+    elif(instance.user.is_staff):
         serializer = AttendanceTrackerSerializer(instance=instance, data=data)
         if serializer.is_valid():
             serializer.save()
+
             instance.expired = True
             instance.save()
             
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        
+
+@api_view(['PUT'])
+def checkOut(request):
+    instance = AttendanceTracker.objects.get(qrCodeId=request.data['qrCodeId'])
+    serializer = AttendanceTrackerSerializer(instance=instance, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+
+    response = {'message':'Check Out Successfully'}
+    return Response(response)
         
 
 @api_view(['GET'])
