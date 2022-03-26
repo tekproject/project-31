@@ -27,51 +27,50 @@ def getCode(request):
 def checkIn(request):
     
     data = request.data
-    
+    date = datetime.datetime.now().date()
+
     try:
+        user = User.objects.get(id=request.user.id)
         instance = AttendanceTracker.objects.get(qrCodeId=data['qrCodeId'])
+        sessionActive = AttendanceTracker.objects.filter(user = request.user.id, checkInStatus=True, checkOutStatus=False).exclude(date = date, place = 'college')
+        collegeEntryValidation = AttendanceTracker.objects.filter(user = request.user.id, place = 'college', checkInStatus= True, checkOutStatus= False, date = date)
+
     except:
         response = {'message':'This is not valid QR code'}
         return Response(response)
 
-    qrCodeInstance = AttendanceTracker.objects.filter(user = request.user.id, checkInStatus=True, checkOutStatus=False).exclude(place = 'college')
-    
-    date = datetime.datetime.now().date()
-    
-    collegeValidation = AttendanceTracker.objects.filter(user = request.user.id, place = 'college', checkIn= True, checkOut= False, date = date)
-
-    collegeCheckoutValidation = AttendanceTracker.objects.filter(user = request.user.id, place = 'college', checkOut= False).exclude(date = date)
-
-
-    if(instance.expired):
+    if instance.expired:
         response = {'message':'This QR code is expired'}
         return Response(response)
     
-    elif(qrCodeInstance):
-        response = {'message':'Please Check-Out your Last Entry'}
+    elif sessionActive:
+        response = {'message':'Please Check-Out from Active Sessions'}
         return Response(response)
 
-    elif(collegeValidation is None):
+    elif not collegeEntryValidation and not data['place'] == 'college':
         response = {'message':'Please Check-In first with college QR'}
         return Response(response)
-
-    elif(collegeCheckoutValidation):
-        response = {'message':'Please Check-Out your Last Entry in college QR'}
+    
+    elif collegeEntryValidation and data['place'] == 'college':
+        response = {'message':'You already have Active Sessions for College'}
         return Response(response)
-
 
     elif(instance.user.is_staff):
         serializer = AttendanceTrackerSerializer(instance=instance, data=data)
         if serializer.is_valid():
             serializer.save()
 
+            instance.user = user
             instance.expired = True
             instance.save()
             
             return Response(serializer.data)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        
+    response = {'message':'This QR code is already Taken, Please Try with new QR Code after Refresh'}
+
+    return Response(response)
 
 @api_view(['PUT'])
 def checkOut(request):

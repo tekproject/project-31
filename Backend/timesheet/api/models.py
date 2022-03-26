@@ -15,7 +15,7 @@ class AttendanceTracker(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING , blank=True, related_name='attendance')
     qrCodeId = models.UUIDField(default=uuid.uuid4, unique=True)
-    date =  models.DateField(auto_now_add=True)
+    date =  models.DateField(blank=True, null=True)
     checkInTime =  models.TimeField(blank=True, null=True)
     checkOutTime =  models.TimeField(blank=True, null=True)
     expired = models.BooleanField(default=False)
