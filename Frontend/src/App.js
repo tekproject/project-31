@@ -1,13 +1,17 @@
 import './App.css';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
-import { LoginContainer } from './container/login';
+import Login from './components/login'
+import NavBar from './components/navBar';
+import Attendance from './components/attendance';
 
 function App() {
   return (
     <>
       <BrowserRouter>
+        <NavBar />
         <Routes>
-          <Route path='/login' element={<LoginContainer />} />
+          <Route path='/' element={<Login />} />
+          <Route path='create-attendance' element={<Attendance />} />
         </Routes>
       </BrowserRouter>
 
