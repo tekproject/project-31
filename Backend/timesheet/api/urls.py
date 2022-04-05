@@ -14,7 +14,7 @@ urlpatterns = [
     path('validate-code/<int:pk>', views.checkExpiry, name='validate-QR-code'),
     path('expire-code/<int:pk>', views.makeExpiry, name='Expire-QR-code'),
     
-    path('get-student-detail/<int:pk>', views.getStudentdetails, name='get-student-detail'),
+    path('get-student-detail', views.getStudentdetails, name='get-student-detail'),
     
     path('api-login', api_views.obtain_auth_token)
 ]

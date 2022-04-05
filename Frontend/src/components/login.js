@@ -36,7 +36,7 @@ const Login = () => {
 
     useEffect(() => {
         if (userInfo) {
-            history("/create-attendance");
+            history("/user-profile");
         }
     }, [dispatch, userInfo, history]);
 

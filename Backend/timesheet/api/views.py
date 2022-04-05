@@ -111,10 +111,13 @@ def profile(request):
 
 
 @api_view(['GET'])
-def getStudentdetails(request, pk):
-    instance = AttendanceTracker.objects.filter(user=pk)
-    serializer = AttendanceTrackerSerializer(instance, many=True)
-    return Response(serializer.data)
+def getStudentdetails(request):
+    if(request.GET.get('id')):
+        instance = AttendanceTracker.objects.filter(user=request.GET.get('id'))
+        serializer = AttendanceTrackerSerializer(instance, many=True)
+        return Response(serializer.data) 
+    res={'error:"need an query string id'}
+    return Response(res,status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
