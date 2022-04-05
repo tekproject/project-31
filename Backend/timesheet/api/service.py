@@ -8,3 +8,7 @@ def generateCode():
     instance = AttendanceTracker.objects.create(user=user)
     serializer = AttendanceTrackerSerializer(instance) 
     return serializer
+
+def checkPassword(userId, password):
+    user = User.objects.get(id = userId)
+    return user.check_password(password) 

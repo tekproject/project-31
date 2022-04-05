@@ -17,4 +17,10 @@ class UserSerializer(serializers.ModelSerializer):
     '''Serializers for User'''
     class Meta:
         model = User
-        fields = '__all__'
+        exclude = ['password']
+
+
+class AuthTokenSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=200)
+    password = serializers.CharField(max_length=200)
+
