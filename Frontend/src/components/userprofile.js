@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import { fetchUserprofile } from "../redux/actions/users/useractions";
-import Loading from "./loading";
 
 const UserProfiles = (props) => {
 
@@ -29,7 +28,6 @@ const UserProfiles = (props) => {
     )
     return (
         <div className="container-fluid">
-            {loading && <Loading />}
             <Card sx={{
                 maxWidth: 600,
                 maxHeight: 700,

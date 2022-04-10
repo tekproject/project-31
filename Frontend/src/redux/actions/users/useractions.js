@@ -5,9 +5,6 @@ import {
     USER_LOGIN_FAIL,
     USER_LOGIN_SUCCESS,
     USER_LOGOUT,
-    FETCH_USERS_REQUEST,
-    FETCH_USERS_SUCCESS,
-    FETCH_USERS_FAIL,
     FETCH_USERPROFILE_REQUEST,
     FETCH_USERPROFILE_SUCCESS,
     FETCH_USERPROFILE_FAIL,
@@ -37,7 +34,12 @@ export const loginUser = ({ username, password }) => {
                 payload: data,
             });
             sessionStorage.setItem("userAuthData", JSON.stringify(data));
-            sessionStorage.setItem("userName", JSON.stringify(username));
+            sessionStorage.setItem("id", JSON.stringify(data.profile.id));
+            sessionStorage.setItem("token", JSON.stringify(data.token));
+            sessionStorage.setItem("isstaff", JSON.stringify(data.profile.is_staff));
+            sessionStorage.setItem("username", JSON.stringify(data.profile.username));
+
+
         } catch (error) {
             dispatch({
                 type: USER_LOGIN_FAIL,
@@ -47,33 +49,7 @@ export const loginUser = ({ username, password }) => {
     };
 };
 
-export const fetchUsers = () => {
-    return async (dispatch, getState) => {
-        try {
-            dispatch({
-                type: FETCH_USERS_REQUEST,
-                loading: true,
-            });
-            const { userInfo } = getState().userLogin;
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    authorization: `token ${userInfo.token}`,
-                },
-            };
-            const { data } = await axios.get("/all-students", config);
-            dispatch({
-                type: FETCH_USERS_SUCCESS,
-                payload: data,
-            });
-        } catch (error) {
-            dispatch({
-                type: FETCH_USERS_FAIL,
-                error: error.response && error.response.data.message,
-            });
-        }
-    };
-};
+
 
 export const fetchUserprofile = () => {
     return async (dispatch, getState) => {
@@ -86,7 +62,7 @@ export const fetchUserprofile = () => {
             const config = {
                 headers: {
                     "Content-Type": "application/json",
-                    authorization: `token ${userInfo.token}`,
+                    authorization: `${userInfo.token}`,
                 },
             };
 
@@ -95,7 +71,6 @@ export const fetchUserprofile = () => {
                 type: FETCH_USERPROFILE_SUCCESS,
                 payload: data,
             });
-            sessionStorage.setItem("isstaff", JSON.stringify(data.is_staff));
         } catch (error) {
             dispatch({
                 type: FETCH_USERPROFILE_FAIL,
