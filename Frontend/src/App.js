@@ -3,11 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import Login from './components/login'
 import NavBar from './components/navBar';
-import CreateAttendance from './components/attendance';
-import Users from './components/users';
 import UserProfiles from './components/userprofile';
-import GetStudentDetail from './components/get-student-detail';
-import Forbidden from './services/forbidden';
 import PrivateRoute from './services/privateRoute';
 
 function App() {
@@ -26,20 +22,18 @@ function App() {
           <Routes>
 
             <Route path='/' element={<Login />} />
-            <Route path='create-attendance' element={<CreateAttendance />} />
-            <Route path='all-students' element={<Users />} />
-            <Route path='user-profile' element={<UserProfiles />} />
-            <Route path='get-student-detail' element={<GetStudentDetail />} />
-            <Route path="forbidden" element={<Forbidden />} />
-            {/* <Route
-              path="create-attendance"
+            <Route
+              path="user-profile"
               element={
                 <PrivateRoute>
                   {" "}
-                  <CreateAttendance />{" "}
+                  <UserProfiles />{" "}
                 </PrivateRoute>
               }
-            /> */}
+            />
+
+
+
 
           </Routes>
         }

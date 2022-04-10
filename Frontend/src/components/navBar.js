@@ -9,16 +9,18 @@ import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Tooltip from "@mui/material/Tooltip";
 import GroupsIcon from '@mui/icons-material/Groups';
-import PersonIcon from '@mui/icons-material/Person';
 import SpellcheckIcon from '@mui/icons-material/Spellcheck';
+import ContactPageIcon from '@mui/icons-material/ContactPage';
+import InfoIcon from '@mui/icons-material/Info';
+import PersonIcon from '@mui/icons-material/Person';
 
 function NavBar() {
     const dispatch = useDispatch();
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
     const history = useNavigate();
-    const isAuth = sessionStorage.getItem("isstaff");
-    const username = sessionStorage.getItem("userName");
+    const isstaff = sessionStorage.getItem("isstaff");
+    const username = JSON.parse(sessionStorage.getItem("username"));
     const logoutHandler = () => {
         dispatch(logoutUser());
         history("/");
@@ -33,70 +35,8 @@ function NavBar() {
                     <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
                         Touchless Timesheet Tracker
                     </Typography>
-                    {userInfo ? (
-                        <>
-                            <a className="link" href="all-students" style={mystyle}
-                            >
-                                <Tooltip
-                                    title="All-Students"
-                                    style={{
-                                        cursor: "pointer",
-                                        marginRight: 100,
-                                        fontSize: 45
-                                    }}
-                                    variant="contained"
-                                >
-                                    <GroupsIcon />
-                                </Tooltip>
-                            </a>
 
-                            <a className="link" href="user-profile" style={mystyle}
-                            >
-                                <Tooltip
-                                    title="Your Profile"
-                                    style={{
-                                        cursor: "pointer",
-                                        marginRight: 100,
-                                        fontSize: 45
-                                    }}
-                                    variant="contained"
-                                >
-                                    <PersonIcon />
-                                </Tooltip>
-                            </a>
-
-                            <a className="link" href="get-student-detail" style={mystyle}
-                            >
-                                <Tooltip
-                                    title="Know Your Data"
-                                    style={{
-                                        cursor: "pointer",
-                                        marginRight: 100,
-                                        fontSize: 45
-                                    }}
-                                    variant="contained"
-                                >
-                                    <PersonIcon />
-                                </Tooltip>
-                            </a>
-
-
-
-                            <button onClick={logoutHandler} className="logout">
-                                <LogoutIcon />
-                            </button>
-                            <Tooltip
-                                title={username}
-                                style={{ cursor: "pointer" }}
-                                variant="contained"
-                            >
-                                <PersonIcon />
-                            </Tooltip>
-                        </>
-                    ) : (
-                        ""
-                    )}
-                    {isAuth === true && isAuth === false ?
+                    {isstaff === "true" ? (
                         <>
                             <a className="link" href="all-students" style={mystyle}
                             >
@@ -140,26 +80,79 @@ function NavBar() {
                                     }}
                                     variant="contained"
                                 >
-                                    <PersonIcon />
+                                    <ContactPageIcon />
                                 </Tooltip>
                             </a>
+
+                            <Tooltip
+                                title={username}
+                                style={{
+                                    cursor: "pointer",
+                                    marginRight: 100,
+                                    fontSize: 45
+                                }}
+                                variant="contained"
+                            >
+                                <PersonIcon />
+                            </Tooltip>
 
                             <button onClick={logoutHandler} className="logout">
                                 <LogoutIcon />
                             </button>
-                            <li className="items">
+
+
+                        </>
+                    ) : (
+                        <>
+                            <a className="link" href="user-profile" style={mystyle}
+                            >
                                 <Tooltip
-                                    title={username}
-                                    style={{ cursor: "pointer" }}
+                                    title="Your Profile"
+                                    style={{
+                                        cursor: "pointer",
+                                        marginRight: 100,
+                                        fontSize: 45
+                                    }}
                                     variant="contained"
                                 >
-                                    <PersonIcon />
+                                    <ContactPageIcon />
                                 </Tooltip>
-                            </li>
-                        </>
+                            </a>
 
-                        :
-                        ""}
+                            <a className="link" href="get-student-detail" style={mystyle}
+                            >
+                                <Tooltip
+                                    title="Know Your Data"
+                                    style={{
+                                        cursor: "pointer",
+                                        marginRight: 100,
+                                        fontSize: 45
+                                    }}
+                                    variant="contained"
+                                >
+                                    <InfoIcon />
+                                </Tooltip>
+                            </a>
+
+                            <Tooltip
+                                title={username}
+                                style={{
+                                    cursor: "pointer",
+                                    marginRight: 100,
+                                    fontSize: 45
+                                }}
+                                variant="contained"
+                            >
+                                <PersonIcon />
+                            </Tooltip>
+
+                            <button onClick={logoutHandler} className="logout">
+                                <LogoutIcon />
+                            </button>
+                        </>
+                    )}
+
+
                 </Toolbar>
             </AppBar>
         </Box >
