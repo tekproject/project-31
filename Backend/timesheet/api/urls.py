@@ -18,7 +18,5 @@ urlpatterns = [
     
     # path('api-login', api_views.obtain_auth_token)
     path('api-login', views.authToken),
-    path('accounts/login/', views.logCheck),
-
-    path('staff/signup', views.createAccount)
+    path('accounts/login/', views.logCheck)
 ]

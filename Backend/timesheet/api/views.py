@@ -1,4 +1,4 @@
-import re
+from ast import And
 from api.models import AttendanceTracker
 from django.contrib.auth.models import User
 import datetime
@@ -13,7 +13,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from api.serializers import AttendanceTrackerSerializer, UserSerializer, AuthTokenSerializer
-from api.service import generateCode, checkPassword, validRequest
+from api.service import generateCode, checkPassword
 
 @api_view(['GET'])
 def home(request):
@@ -159,16 +159,3 @@ def authToken(request):
 @api_view(['GET'])
 def logCheck(request):
     return Response({'message': 'You need to be Logged-In'}, 401)
-
-
-@api_view(['POST'])
-def createAccount(request):
-    req = validRequest(request.data)
-    if req['is_valid']:
-        try:
-            User.objects.create_user(request.data.get('username'), request.data.get('email'), request.data.get('password'))
-            return Response(req['message'], status=status.HTTP_201_CREATED)
-        except:
-            return Response({"error":"Internal Error has Occured"}, 500)
-       
-    return Response(req['message'], 400)
